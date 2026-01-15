@@ -12,6 +12,13 @@ export function Character() {
     // Si la data no ha llegado, mostramos un cargando
     if (!data) return <div className="text-center mt-10">Cargando personaje...</div>;
 
+    // 4.- Lista de Episodios en los que aparece el personaje
+    const episodios = data.episode.map((epi) => {
+        return epi.match(/\d+/g);
+    }).join(', ');
+
+    console.log(episodios)
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center p-10">
             
@@ -32,6 +39,7 @@ export function Character() {
                         <p><span className="font-bold text-gray-400">Género:</span> {data.gender}</p>
                         <p><span className="font-bold text-gray-400">Origen:</span> {data.origin?.name}</p>
                         <p><span className="font-bold text-gray-400">Ubicación:</span> {data.location?.name}</p>
+                        <p><span className="font-bold text-gray-400">Episodios en los que aparece:</span> {episodios} </p>
                     </div>
                 </div>
             </div>

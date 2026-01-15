@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useFetch } from "../useFetch"; 
+import { Character } from "../components/Character";
 
 export function Characters() {
     // Usamos el hook aquí
@@ -28,6 +29,7 @@ export function Characters() {
                                 <li>- Origen: {item.origin.name}</li>
                                 <li>- Ubicación: {item.location.name}</li>
                             </ul>
+                            <Link to={`/personaje/${item.id}`} className="cursor-pointer">Ver más información</Link>
                         </div>
                     </li>
                 ))}

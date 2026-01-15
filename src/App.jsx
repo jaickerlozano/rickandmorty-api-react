@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 // 1. Importa cada uno desde SU propio archivo
 import { Home } from "./pages/Home";       
 import { Characters } from "./pages/Characters"; 
+import { Character } from "./components/Character"; 
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
 
         {/* Ruta para la página de Personajes */}
         <Route path="/personajes" element={<Characters />} />
+        <Route path="/personaje/:id" element={<Character />} />
         
         {/* Aquí irían las futuras rutas */}
         {/* <Route path="/ubicaciones" element={<Ubicaciones />} /> */}

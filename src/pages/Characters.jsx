@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useFetch } from "../useFetch"; // Asegúrate que la ruta al hook sea correcta (subir un nivel)
+import { useFetch } from "../useFetch"; 
 
 export function Characters() {
     // Usamos el hook aquí
@@ -21,9 +21,13 @@ export function Characters() {
                         <img src={item.image} alt={item.name} className="w-full h-auto"/>
                         <div className="p-4">
                             <h3 className="text-xl font-bold">{item.name}</h3>
-                            <p className={item.status === 'Alive' ? 'text-green-400' : 'text-red-400'}>
-                                {item.status} - {item.species}
-                            </p>
+                            <ul className={item.status === 'Alive' ? 'text-green-400' : 'text-red-400'}>
+                                <li>- Estado: {item.status}</li>
+                                <li>- Especie: {item.species}</li>
+                                <li>- Género: {item.gender}</li>
+                                <li>- Origen: {item.origin.name}</li>
+                                <li>- Ubicación: {item.location.name}</li>
+                            </ul>
                         </div>
                     </li>
                 ))}

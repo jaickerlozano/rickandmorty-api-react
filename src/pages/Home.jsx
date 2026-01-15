@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export function Index() {
+export function Home() {
     return (
         <div className="flex flex-col justify-center items-center h-screen text-center">
             <h1 className='mb-10 text-5xl font-bold text-blue-400'>

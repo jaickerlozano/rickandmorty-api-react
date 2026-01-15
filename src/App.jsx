@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import { Index } from "./pages/Home";       
+// 1. Importa cada uno desde SU propio archivo
+import { Home } from "./pages/Home";       
 import { Characters } from "./pages/Characters"; 
 
 function App() {
@@ -9,7 +10,7 @@ function App() {
       
       <Routes>
         {/* Ruta para la Landing Page (Menú) */}
-        <Route path="/" element={<Index />} />
+        <Route path="/" element={<Home />} />
 
         {/* Ruta para la página de Personajes */}
         <Route path="/personajes" element={<Characters />} />

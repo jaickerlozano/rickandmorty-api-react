@@ -13,13 +13,13 @@ export function Home() {
                     Personajes
                 </Link>
 
-                <button className="border-2 border-blue-500 rounded-xl px-6 py-3 bg-blue-900/50 hover:bg-blue-800 transition font-semibold text-lg">
-                    Ubicaciones
-                </button>
+                <Link to="/episodios" className="border-2 border-blue-500 rounded-xl px-6 py-3 bg-blue-900/50 hover:bg-blue-800 transition font-semibold text-lg">
+                    Episodios
+                </Link>
 
                 {/* Estos botones no harán nada hasta que crees las rutas en App.jsx */}
                 <button className="border-2 border-gray-500 rounded-xl px-6 py-3 bg-gray-700 text-gray-300 cursor-not-allowed">
-                    Episodio (Pronto)
+                    Favoritos (Pronto)
                 </button>
             </nav>
         </div>

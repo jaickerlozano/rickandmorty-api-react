@@ -10,7 +10,7 @@ export function Characters() {
     // 2. CONSTRUIMOS LA URL DINÁMICA
     // Cada vez que 'name' o 'status' cambien, esta URL cambia.
     // Y como tu useFetch tiene [url] en su dependencia, ¡se vuelve a ejecutar solo!
-    const API_URL = `https://rickandmortyapi.com/api/character/?name=${name}&status=${status}&species=${species}`;
+    const API_URL = `https://rickandmortyapi.com/api/character/?name=${name}&status=${status}&species=${species}`; // Esto es mucho más eficiente que usar una lista filtrada porque la url es dinámica y el servidor busca exactamente la url pasada
 
     // Usamos el hook aquí
     const { data } = useFetch(API_URL);

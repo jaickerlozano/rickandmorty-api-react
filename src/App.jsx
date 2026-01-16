@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";       
 import { Characters } from "./pages/Characters"; 
 import { Character } from "./components/Character"; 
+import { Episodes } from "./pages/Episodes";
 
 function App() {
   return (
@@ -17,8 +18,8 @@ function App() {
         <Route path="/personajes" element={<Characters />} />
         <Route path="/personaje/:id" element={<Character />} />
         
-        {/* Aquí irían las futuras rutas */}
-        {/* <Route path="/ubicaciones" element={<Ubicaciones />} /> */}
+        {/* Ruta para la página de Episodios */}
+        <Route path="/episodios" element={<Episodes />} />
       </Routes>
     </div>
   )

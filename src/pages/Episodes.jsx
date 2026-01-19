@@ -5,10 +5,23 @@ import { useState } from "react";
 export function Episodes() {
     const [name, setName] = useState('');
     // const [episode, setEpisode] = useState(''); // Opcional por si se quiere filtrar por código de episodio
+    const [page, setPage] = useState(1);
 
-    const API_URL = `https://rickandmortyapi.com/api/episode/?name=${name}`;
+    const API_URL = `https://rickandmortyapi.com/api/episode/?page=${page}&name=${name}`;
     const { data } = useFetch(API_URL);
     const episodes = data?.results;
+
+    const info = data?.info;
+
+    // FUNCIONES PARA CAMBIAR DE PÁGINA
+    const handleNext = () => setPage(page + 1);
+    const handlePrev = () => setPage(page - 1);
+
+    // FUNCIONES DE FILTRO (IMPORTANTE: Resetear página a 1)
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+        setPage(1); // Si escribo, vuelvo a la pág 1
+    }
 
     return (
         <div className="p-10">
@@ -22,12 +35,18 @@ export function Episodes() {
             <div className="flex justify-center mb-8">
                 <input 
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={handleNameChange}
                     type="text" 
                     placeholder="Buscar episodio..."
                     className="p-2 rounded bg-slate-700 text-white w-64 border border-slate-600"
                 />
             </div>
+
+            {!episodes && (
+                <p className="text-center text-red-400 text-xl">
+                    No se encontró ningún episodio con esos datos 😢
+                </p>
+            )}
 
             <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
                 <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
@@ -68,6 +87,31 @@ export function Episodes() {
                     ))}
                 </ul>
             </div>
+            {/* 5. BOTONES DE PAGINACIÓN */}
+            {/* Solo mostramos la paginación si hay personajes */}
+            {episodes && (
+                <div className="flex justify-center items-center gap-4 pb-10">
+                    <button 
+                        onClick={handlePrev}
+                        disabled={!info?.prev} // Desactivar si no hay página anterior
+                        className={`px-4 py-2 rounded font-bold ${!info?.prev ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                    >
+                        Anterior
+                    </button>
+
+                    <span className="text-xl font-bold">
+                        Página {page} de {info?.pages}
+                    </span>
+
+                    <button 
+                        onClick={handleNext}
+                        disabled={!info?.next} // Desactivar si no hay página siguiente
+                        className={`px-4 py-2 rounded font-bold ${!info?.next ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                    >
+                        Siguiente
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

@@ -131,9 +131,9 @@ export function Characters() {
                 <>
                     <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
                         {personajes?.map((item) => (
-                            <li key={item.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition relative">
+                            <li key={item.id} className="bg-slate-800/40 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 hover:border-blue-500/50 transition-all duration-300 relative group">
                                 <img src={item.image} alt={item.name} className="w-full h-auto"/>
-                                
+
                                 {/* 4. BOTÓN DE FAVORITO (Corazón) */}
                                 <button 
                                     onClick={() => toggleFavorite(item)}

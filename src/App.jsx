@@ -9,7 +9,7 @@ import { Favorites } from "./pages/Favorites";
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-900 text-white"> 
+    <div className="min-h-screen text-white"> 
       {/* Puse el bg aquí para que aplique a toda la app de una vez */}
       
       <Routes>

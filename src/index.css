@@ -1,2 +1,19 @@
 @import 'tailwindcss';
 
+body {
+    /* Un degradado sutil de arriba a abajo */
+    /* @apply bg-slate-900 text-white min-h-screen; */
+    background: radial-gradient(circle at top, #1e293b, #020617);
+}
+
+/* Opcional: Para personalizar el scrollbar y que no se vea feo */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #0f172a; 
+}
+::-webkit-scrollbar-thumb {
+    background: #3b82f6; 
+    border-radius: 4px;
+}

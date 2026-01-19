@@ -64,7 +64,7 @@ export function Location() {
                 <>
                     <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
                         {locations?.map((item) => (
-                            <li key={item.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition">
+                            <li key={item.id} className="bg-slate-800/40 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 hover:border-blue-500/50 transition-all duration-300 relative group">
                                 <div className="p-4">
                                     <h3 className="text-xl font-bold">{item.name}</h3>
                                     <p className="font-bold text-sm mb-2 text-gray-400">Tipo: {item.type}</p>

@@ -66,7 +66,7 @@ export function Episodes() {
                     <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
                         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                             {episodes?.map((epi) => (
-                            <li key={epi.id} className="bg-slate-800 rounded-lg p-6 shadow-lg border border-slate-700">
+                            <li key={epi.id} className="bg-slate-800/40 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 hover:border-blue-500/50 transition-all duration-300 relative group">
                                 <h3 className="text-xl font-bold text-blue-400 mb-2">
                                     {epi.episode}: {epi.name}
                                 </h3>

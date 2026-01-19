@@ -29,7 +29,7 @@ export function Favorites() {
 
             {favorites.length === 0 && (
                 <div className="text-center text-gray-400 mt-10">
-                    <p className="text-xl">Aún no tienes favoritos, chamo.</p>
+                    <p className="text-xl">Aún no tienes favoritos.</p>
                     <Link to="/personajes" className="text-blue-400 underline mt-2 inline-block">
                         ¡Ve a agregar unos cuantos!
                     </Link>

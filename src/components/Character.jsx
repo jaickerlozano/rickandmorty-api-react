@@ -1,10 +1,12 @@
 // components/Character.jsx
-import { Link, useParams } from "react-router-dom"; // 1. Importamos useParams
+import { useNavigate, useParams } from "react-router-dom"; // 1. Importamos useParams
 import { useFetch } from "../useFetch"; 
 
 export function Character() {
     // 2. Agarramos el ID de la URL (ej: 1, 2, 100)
     const { id } = useParams(); 
+
+    const navigate = useNavigate(); // Hook para volver atrás
     
     // 3. Hacemos fetch directo a ese ID
     const { data } = useFetch(`https://rickandmortyapi.com/api/character/${id}`);
@@ -20,9 +22,13 @@ export function Character() {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center p-10">
             
-            <Link to="/personajes" className="mb-5 text-blue-400 hover:text-blue-300">
-                ← Volver a la lista
-            </Link>
+            {/* Usamos un botón con navigate(-1) en vez de Link para poder navegar una página atrás en el historial */}
+            <button 
+                onClick={() => navigate(-1)} 
+                className="mb-5 inline-block text-blue-400 hover:text-blue-300 font-semibold transition"
+            >
+                ← Volver atrás
+            </button>
 
             {/* Tarjeta individual centrada */}
             <div className="bg-slate-800 rounded-xl overflow-hidden shadow-2xl max-w-lg w-full border border-slate-700">

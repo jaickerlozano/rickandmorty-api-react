@@ -2,13 +2,14 @@ import { Link } from "react-router-dom";
 import { useFetch } from "../useFetch";
 import { useState } from "react";
 
-export function Episodes() {
+export function Location() {
     const [name, setName] = useState('');
-    // const [episode, setEpisode] = useState(''); // Opcional por si se quiere filtrar por código de episodio
 
-    const API_URL = `https://rickandmortyapi.com/api/episode/?name=${name}`;
+    const API_URL = `https://rickandmortyapi.com/api/location/?name=${name}`;
+
     const { data } = useFetch(API_URL);
-    const episodes = data?.results;
+
+    const ubicaciones = data?.results;
 
     return (
         <div className="p-10">
@@ -16,35 +17,36 @@ export function Episodes() {
                 ← Volver al inicio
             </Link>
 
-            <h2 className="text-3xl mb-8 font-bold text-center">Episodios</h2>
-
-            {/* Input de Búsqueda */}
-            <div className="flex justify-center mb-8">
+            <h2 className="text-3xl mb-8 font-bold text-center">Ubicación</h2>
+            <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
+                {/* Input Nombre */}
                 <input 
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     type="text" 
-                    placeholder="Buscar episodio..."
-                    className="p-2 rounded bg-slate-700 text-white w-64 border border-slate-600"
+                    className="bg-slate-800 rounded border border-slate-600 text-white p-3 focus:outline-none focus:border-blue-500" 
+                    placeholder="🔍 Nombre..." 
                 />
             </div>
+            {!ubicaciones && (
+                <p className="text-center text-red-400 text-xl">
+                    ¡No se encontró a nadie con esos datos 😢!
+                </p>
+            )}
 
-            <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
-                <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                    {episodes?.map((epi) => (
-                        <li key={epi.id} className="bg-slate-800 rounded-lg p-6 shadow-lg border border-slate-700">
-                            <h3 className="text-xl font-bold text-blue-400 mb-2">
-                                {epi.episode}: {epi.name}
-                            </h3>
-                            <p className="text-gray-300 mb-4">📅 {epi.air_date}</p>
-                            
-                            {/* Obtención de los personajes */}
+            <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {ubicaciones?.map((item) => (
+                    <li key={item.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition">
+                        <div className="p-4">
+                            <h3 className="text-xl font-bold">{item.name}</h3>
+                            <p className="font-bold text-sm mb-2 text-gray-400">Tipo: {item.type}</p>
+                            <p className="font-bold text-sm mb-2 text-gray-400">Dimensión: {item.dimension}</p>
                             <div>
-                                <p className="font-bold text-sm mb-2 text-gray-400">Personajes en este episodio:</p>
+                                <p className="font-bold text-sm mb-2 text-gray-400">Residentes de este planeta:</p>
                                 <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2">
-                                    {epi.characters.slice(0, 10).map((urlCharacter) => {
+                                    {item.residents.slice(0, 10).map((urlResident) => {
                                         // Se cortamos la URL por los '/' y agarramos el último pedazo (el ID)
-                                        const characterId = urlCharacter.split("/").pop();
+                                        const characterId = urlResident.split("/").pop();
                                         
                                         return (
                                             <Link 
@@ -57,17 +59,17 @@ export function Episodes() {
                                         )
                                     })}
                                     {/* Si hay muchos, ponemos un aviso */}
-                                    {epi.characters.length > 10 && (
+                                    {item.residents.length > 10 && (
                                         <span className="text-xs text-gray-500 flex items-center">
-                                            ... y {epi.characters.length - 10} más
+                                            ... y {item.residents.length - 10} más
                                         </span>
                                     )}
                                 </div>
                             </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+                        </div>
+                    </li>
+                ))}
+            </ul>
         </div>
     )
 }

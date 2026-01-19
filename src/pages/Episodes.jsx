@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useFetch } from "../useFetch";
 import { useState } from "react";
+import { Loading } from "../components/Loading"; 
+import { ErrorMsg } from "../components/ErrorMsg";
 
 export function Episodes() {
     const [name, setName] = useState('');
@@ -8,7 +10,7 @@ export function Episodes() {
     const [page, setPage] = useState(1);
 
     const API_URL = `https://rickandmortyapi.com/api/episode/?page=${page}&name=${name}`;
-    const { data } = useFetch(API_URL);
+    const { data, loading, error } = useFetch(API_URL);
     const episodes = data?.results;
 
     const info = data?.info;
@@ -48,69 +50,82 @@ export function Episodes() {
                 </p>
             )}
 
-            <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
-                <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-                    {episodes?.map((epi) => (
-                        <li key={epi.id} className="bg-slate-800 rounded-lg p-6 shadow-lg border border-slate-700">
-                            <h3 className="text-xl font-bold text-blue-400 mb-2">
-                                {epi.episode}: {epi.name}
-                            </h3>
-                            <p className="text-gray-300 mb-4">📅 {epi.air_date}</p>
-                            
-                            {/* Obtención de los personajes */}
-                            <div>
-                                <p className="font-bold text-sm mb-2 text-gray-400">Personajes en este episodio:</p>
-                                <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2">
-                                    {epi.characters.slice(0, 10).map((urlCharacter) => {
-                                        // Se cortamos la URL por los '/' y agarramos el último pedazo (el ID)
-                                        const characterId = urlCharacter.split("/").pop();
-                                        
-                                        return (
-                                            <Link 
-                                                key={characterId} 
-                                                to={`/personaje/${characterId}`}
-                                                className="bg-slate-700 hover:bg-blue-600 text-xs text-white px-2 py-1 rounded transition"
-                                            >
-                                                Personaje {characterId}
-                                            </Link>
-                                        )
-                                    })}
-                                    {/* Si hay muchos, ponemos un aviso */}
-                                    {epi.characters.length > 10 && (
-                                        <span className="text-xs text-gray-500 flex items-center">
-                                            ... y {epi.characters.length - 10} más
-                                        </span>
-                                    )}
+            {/* 1. Si está cargando, mostramos el Spinner y NADA MÁS */}
+            {loading && <Loading />}
+
+            {/* 2. Si hay error (y NO es solo que no encontró resultados, sino error feo) */}
+            {error && error !== "There is nothing here" && <ErrorMsg mensaje="Error de conexión con la API" />}
+
+            {/* 3. Si no hay error ni loading, pero tampoco personajes (búsqueda vacía) */}
+            {!loading && !error && !episodes && (
+                <p className="text-center text-red-400 text-xl">No se encontró a nadie con esos datos 😢</p>
+            )}
+
+            {!loading && episodes && (
+                <>
+                    <div className="flex flex-col md:flex-row gap-4 justify-center mb-8">
+                        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                            {episodes?.map((epi) => (
+                            <li key={epi.id} className="bg-slate-800 rounded-lg p-6 shadow-lg border border-slate-700">
+                                <h3 className="text-xl font-bold text-blue-400 mb-2">
+                                    {epi.episode}: {epi.name}
+                                </h3>
+                                <p className="text-gray-300 mb-4">📅 {epi.air_date}</p>
+                                
+                                {/* Obtención de los personajes */}
+                                <div>
+                                    <p className="font-bold text-sm mb-2 text-gray-400">Personajes en este episodio:</p>
+                                    <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2">
+                                        {epi.characters.slice(0, 10).map((urlCharacter) => {
+                                            // Se cortamos la URL por los '/' y agarramos el último pedazo (el ID)
+                                            const characterId = urlCharacter.split("/").pop();
+
+                                            return (
+                                                <Link 
+                                                    key={characterId} 
+                                                    to={`/personaje/${characterId}`}
+                                                    className="bg-slate-700 hover:bg-blue-600 text-xs text-white px-2 py-1 rounded transition"
+                                                >
+                                                    Personaje {characterId}
+                                                </Link>
+                                            )
+                                        })}
+                                        {/* Si hay muchos, ponemos un aviso */}
+                                        {epi.characters.length > 10 && (
+                                            <span className="text-xs text-gray-500 flex items-center">
+                                                ... y {epi.characters.length - 10} más
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            {/* 5. BOTONES DE PAGINACIÓN */}
-            {/* Solo mostramos la paginación si hay personajes */}
-            {episodes && (
-                <div className="flex justify-center items-center gap-4 pb-10">
-                    <button 
-                        onClick={handlePrev}
-                        disabled={!info?.prev} // Desactivar si no hay página anterior
-                        className={`px-4 py-2 rounded font-bold ${!info?.prev ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
-                    >
-                        Anterior
-                    </button>
-
-                    <span className="text-xl font-bold">
-                        Página {page} de {info?.pages}
-                    </span>
-
-                    <button 
-                        onClick={handleNext}
-                        disabled={!info?.next} // Desactivar si no hay página siguiente
-                        className={`px-4 py-2 rounded font-bold ${!info?.next ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
-                    >
-                        Siguiente
-                    </button>
-                </div>
+                            </li>
+                            ))}
+                        </ul>
+                    </div>
+                    {/* 5. BOTONES DE PAGINACIÓN */}
+                    {/* Solo mostramos la paginación si hay personajes */}
+                    {episodes && (
+                        <div className="flex justify-center items-center gap-4 pb-10">
+                            <button 
+                                onClick={handlePrev}
+                                disabled={!info?.prev} // Desactivar si no hay página anterior
+                                className={`px-4 py-2 rounded font-bold ${!info?.prev ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                            >   
+                                Anterior
+                            </button>
+                            <span className="text-xl font-bold">
+                                Página {page} de {info?.pages}
+                            </span>
+                            <button 
+                                onClick={handleNext}
+                                disabled={!info?.next} // Desactivar si no hay página siguiente
+                                className={`px-4 py-2 rounded font-bold ${!info?.next ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                            >           
+                                Siguiente
+                            </button>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     )

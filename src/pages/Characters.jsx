@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useFetch } from "../useFetch"; 
 import { useState, useEffect } from "react";
+import { Loading } from "../components/Loading"; 
+import { ErrorMsg } from "../components/ErrorMsg";
 
 export function Characters() {
     const [name, setName] = useState(''); 
@@ -39,7 +41,7 @@ export function Characters() {
 
     const API_URL = `https://rickandmortyapi.com/api/character/?page=${page}&name=${name}&status=${status}&species=${species}`;
 
-    const { data } = useFetch(API_URL);
+    const { data, loading, error } = useFetch(API_URL);
     const personajes = data?.results; 
     
     // Obtenemos la info de paginación (para saber si hay next/prev)
@@ -112,57 +114,73 @@ export function Characters() {
                 </p>
             )}
 
+            {/* 1. Si está cargando, mostramos el Spinner y NADA MÁS */}
+            {loading && <Loading />}
+
+            {/* 2. Si hay error (y NO es solo que no encontró resultados, sino error feo) */}
+            {error && error !== "There is nothing here" && <ErrorMsg mensaje="Error de conexión con la API" />}
+
+            {/* 3. Si no hay error ni loading, pero tampoco personajes (búsqueda vacía) */}
+            {!loading && !error && !personajes && (
+                <p className="text-center text-red-400 text-xl">No se encontró a nadie con esos datos 😢</p>
+            )}
+
             {/* LISTA DE PERSONAJES */}
-            <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
-                {personajes?.map((item) => (
-                    <li key={item.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition relative">
-                        <img src={item.image} alt={item.name} className="w-full h-auto"/>
+            {/* 4. Si hay data y NO está cargando, mostramos la lista */}
+            {!loading && personajes && (
+                <>
+                    <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
+                        {personajes?.map((item) => (
+                            <li key={item.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition relative">
+                                <img src={item.image} alt={item.name} className="w-full h-auto"/>
+                                
+                                {/* 4. BOTÓN DE FAVORITO (Corazón) */}
+                                <button 
+                                    onClick={() => toggleFavorite(item)}
+                                    className="absolute top-2 right-2 bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/30 transition text-2xl"
+                                >
+                                    {isFavorite(item.id) ? '❤️' : '🤍'}
+                                </button>
                         
-                        {/* 4. BOTÓN DE FAVORITO (Corazón) */}
-                        <button 
-                            onClick={() => toggleFavorite(item)}
-                            className="absolute top-2 right-2 bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/30 transition text-2xl"
-                        >
-                            {isFavorite(item.id) ? '❤️' : '🤍'}
-                        </button>
-
-                        <div className="p-4">
-                            <h3 className="text-xl font-bold truncate">{item.name}</h3>
-                            <p className={item.status === 'Alive' ? 'text-green-400' : 'text-red-400'}>
-                                {item.status} - {item.species}
-                            </p>
-                            <Link to={`/personaje/${item.id}`} className="text-blue-400 hover:underline mt-2 block">
-                                Ver más información
-                            </Link>
+                                <div className="p-4">
+                                    <h3 className="text-xl font-bold truncate">{item.name}</h3>
+                                    <p className={item.status === 'Alive' ? 'text-green-400' : 'text-red-400'}>
+                                        {item.status} - {item.species}
+                                    </p>
+                                    <Link to={`/personaje/${item.id}`} className="text-blue-400 hover:underline mt-2 block">
+                                        Ver más información
+                                    </Link>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                    
+                    {/* 5. BOTONES DE PAGINACIÓN */}
+                    {/* Solo mostramos la paginación si hay personajes */}
+                    {personajes && (
+                        <div className="flex justify-center items-center gap-4 pb-10">
+                            <button 
+                                onClick={handlePrev}
+                                disabled={!info?.prev} // Desactivar si no hay página anterior
+                                className={`px-4 py-2 rounded font-bold ${!info?.prev ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                            >
+                                Anterior
+                            </button>
+                    
+                            <span className="text-xl font-bold">
+                                Página {page} de {info?.pages}
+                            </span>
+                    
+                            <button 
+                                onClick={handleNext}
+                                disabled={!info?.next} // Desactivar si no hay página siguiente
+                                className={`px-4 py-2 rounded font-bold ${!info?.next ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                            >
+                                Siguiente
+                            </button>
                         </div>
-                    </li>
-                ))}
-            </ul>
-
-            {/* 5. BOTONES DE PAGINACIÓN */}
-            {/* Solo mostramos la paginación si hay personajes */}
-            {personajes && (
-                <div className="flex justify-center items-center gap-4 pb-10">
-                    <button 
-                        onClick={handlePrev}
-                        disabled={!info?.prev} // Desactivar si no hay página anterior
-                        className={`px-4 py-2 rounded font-bold ${!info?.prev ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
-                    >
-                        Anterior
-                    </button>
-
-                    <span className="text-xl font-bold">
-                        Página {page} de {info?.pages}
-                    </span>
-
-                    <button 
-                        onClick={handleNext}
-                        disabled={!info?.next} // Desactivar si no hay página siguiente
-                        className={`px-4 py-2 rounded font-bold ${!info?.next ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
-                    >
-                        Siguiente
-                    </button>
-                </div>
+                    )}
+                </>
             )}
         </div>
     )

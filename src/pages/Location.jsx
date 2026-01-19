@@ -4,12 +4,25 @@ import { useState } from "react";
 
 export function Location() {
     const [name, setName] = useState('');
+    const [page, setPage] = useState(1);
 
-    const API_URL = `https://rickandmortyapi.com/api/location/?name=${name}`;
+    const API_URL = `https://rickandmortyapi.com/api/location/?page=${page}&name=${name}`;
 
     const { data } = useFetch(API_URL);
 
-    const ubicaciones = data?.results;
+    const locations = data?.results;
+
+    const info = data?.info;
+
+    // FUNCIONES PARA CAMBIAR DE PÁGINA
+    const handleNext = () => setPage(page + 1);
+    const handlePrev = () => setPage(page - 1);
+
+    // FUNCIONES DE FILTRO (IMPORTANTE: Resetear página a 1)
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+        setPage(1); // Si escribo, vuelvo a la pág 1
+    }
 
     return (
         <div className="p-10">
@@ -22,20 +35,20 @@ export function Location() {
                 {/* Input Nombre */}
                 <input 
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={handleNameChange}
                     type="text" 
                     className="bg-slate-800 rounded border border-slate-600 text-white p-3 focus:outline-none focus:border-blue-500" 
                     placeholder="🔍 Nombre..." 
                 />
             </div>
-            {!ubicaciones && (
+            {!locations && (
                 <p className="text-center text-red-400 text-xl">
                     ¡No se encontró a nadie con esos datos 😢!
                 </p>
             )}
 
-            <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {ubicaciones?.map((item) => (
+            <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
+                {locations?.map((item) => (
                     <li key={item.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition">
                         <div className="p-4">
                             <h3 className="text-xl font-bold">{item.name}</h3>
@@ -70,6 +83,31 @@ export function Location() {
                     </li>
                 ))}
             </ul>
+            {/* 5. BOTONES DE PAGINACIÓN */}
+            {/* Solo mostramos la paginación si hay personajes */}
+            {locations && (
+                <div className="flex justify-center items-center gap-4 pb-10">
+                    <button 
+                        onClick={handlePrev}
+                        disabled={!info?.prev} // Desactivar si no hay página anterior
+                        className={`px-4 py-2 rounded font-bold ${!info?.prev ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                    >
+                        Anterior
+                    </button>
+
+                    <span className="text-xl font-bold">
+                        Página {page} de {info?.pages}
+                    </span>
+
+                    <button 
+                        onClick={handleNext}
+                        disabled={!info?.next} // Desactivar si no hay página siguiente
+                        className={`px-4 py-2 rounded font-bold ${!info?.next ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'}`}
+                    >
+                        Siguiente
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

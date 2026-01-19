@@ -5,6 +5,7 @@ import { Characters } from "./pages/Characters";
 import { Character } from "./components/Character"; 
 import { Episodes } from "./pages/Episodes";
 import { Location } from "./pages/Location";
+import { Favorites } from "./pages/Favorites";
 
 function App() {
   return (
@@ -22,8 +23,11 @@ function App() {
         {/* Ruta para la página de Episodios */}
         <Route path="/episodios" element={<Episodes />} />
 
-        {/* Ruta para la página de Ubicacines */}
+        {/* Ruta para la página de Ubicaciones */}
         <Route path="/ubicaciones" element={<Location />} />
+
+        {/* Ruta para la página de Favoritos */}
+        <Route path="/favoritos" element={<Favorites />} />
       </Routes>
     </div>
   )

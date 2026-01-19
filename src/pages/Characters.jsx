@@ -1,16 +1,42 @@
 import { Link } from "react-router-dom";
 import { useFetch } from "../useFetch"; 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function Characters() {
     const [name, setName] = useState(''); 
     const [status, setStatus] = useState(''); 
     const [species, setSpecies] = useState(''); 
-    
-    // 1. NUEVO ESTADO: Página actual (arranca en 1)
     const [page, setPage] = useState(1);
+    const [favorites, setFavorites] = useState([]);
 
-    // 2. MODIFICAMOS LA URL: Agregamos &page=${page}
+    // EFECTO: Al cargar, leemos los favoritos guardados
+    useEffect(() => {
+        const storedFavs = JSON.parse(localStorage.getItem('favorites')) || [];
+        setFavorites(storedFavs);
+    }, []);
+
+    // 3. LA FUNCIÓN MÁGICA: Agregar o Quitar
+    const toggleFavorite = (personaje) => {
+        // Revisamos si ya existe
+        const isFavorite = favorites.some(fav => fav.id === personaje.id);
+        
+        let newFavorites;
+        if (isFavorite) {
+            // Si existe, lo sacamos (filtro todos MENOS ese)
+            newFavorites = favorites.filter(fav => fav.id !== personaje.id);
+        } else {
+            // Si no existe, lo agregamos al array
+            newFavorites = [...favorites, personaje];
+        }
+
+        setFavorites(newFavorites);
+        // Guardamos en el bolsillo
+        localStorage.setItem('favorites', JSON.stringify(newFavorites));
+    };
+
+    // Función auxiliar para saber si un personaje es favorito (para pintar el corazón)
+    const isFavorite = (id) => favorites.some(fav => fav.id === id);
+
     const API_URL = `https://rickandmortyapi.com/api/character/?page=${page}&name=${name}&status=${status}&species=${species}`;
 
     const { data } = useFetch(API_URL);
@@ -86,10 +112,20 @@ export function Characters() {
                 </p>
             )}
 
+            {/* LISTA DE PERSONAJES */}
             <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
                 {personajes?.map((item) => (
-                    <li key={item.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition">
+                    <li key={item.id} className="bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:scale-105 transition relative">
                         <img src={item.image} alt={item.name} className="w-full h-auto"/>
+                        
+                        {/* 4. BOTÓN DE FAVORITO (Corazón) */}
+                        <button 
+                            onClick={() => toggleFavorite(item)}
+                            className="absolute top-2 right-2 bg-white/10 backdrop-blur-sm p-2 rounded-full hover:bg-white/30 transition text-2xl"
+                        >
+                            {isFavorite(item.id) ? '❤️' : '🤍'}
+                        </button>
+
                         <div className="p-4">
                             <h3 className="text-xl font-bold truncate">{item.name}</h3>
                             <p className={item.status === 'Alive' ? 'text-green-400' : 'text-red-400'}>

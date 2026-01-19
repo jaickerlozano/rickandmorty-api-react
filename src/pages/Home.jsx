@@ -17,9 +17,12 @@ export function Home() {
                     Episodios
                 </Link>
 
-                {/* Estos botones no harán nada hasta que crees las rutas en App.jsx */}
                 <Link to="/ubicaciones" className="border-2 border-blue-500 rounded-xl px-6 py-3 bg-blue-900/50 hover:bg-blue-800 transition font-semibold text-lg">
                     Ubicaciones
+                </Link>
+
+                <Link to="/favoritos" className="border-2 border-blue-500 rounded-xl px-6 py-3 bg-blue-900/50 hover:bg-blue-800 transition font-semibold text-lg">
+                    Favoritos
                 </Link>
             </nav>
         </div>
